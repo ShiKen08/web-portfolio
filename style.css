@@ -1,10 +1,28 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9fafb;
-  color: #333;
+  background-color: #88c0d0; /* soft cyan like old Pokémon UIs */
+  font-family: 'Press Start 2P', monospace; /* retro pixel font */
 }
+
+.pc-room {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  background: url('pc_room_bg.png') no-repeat center/cover;
+}
+
+.monitor {
+  border: 6px solid #222;
+  background: #b0d0f0;
+  width: 90vw;
+  max-width: 700px;
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  image-rendering: pixelated;
+}
+
 
 header {
   background: #111827;
