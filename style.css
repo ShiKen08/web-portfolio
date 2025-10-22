@@ -1,53 +1,223 @@
+/* ================================
+   General Styles
+================================= */
 body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Press Start 2P', monospace; /* Retro pixel font */
   background-color: #88c0d0; /* soft cyan like old Pokémon UIs */
-  font-family: 'Press Start 2P', monospace; /* retro pixel font */
+  color: #222;
 }
-
-.pc-room {
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  background: url('pc_room_bg.png') no-repeat center/cover;
-}
-
-.monitor {
-  border: 6px solid #222;
-  background: #b0d0f0;
-  width: 90vw;
-  max-width: 700px;
-  aspect-ratio: 4/3;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 12px;
-  image-rendering: pixelated;
-}
-
 
 header {
-  background: #111827;
-  color: white;
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px 20px;
+  background-color: #5e81ac;
+  color: #fff;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
 }
 
 nav a {
-  color: white;
-  margin-left: 1rem;
   text-decoration: none;
+  color: #eceff4;
+  transition: color 0.2s;
 }
 
+nav a:hover {
+  color: #88c0d0;
+}
+
+/* ================================
+   Pokémon PC Room
+================================= */
+.pc-room {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 15px;
+  padding: 20px;
+}
+
+/* Background */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #d8dee9; /* placeholder color, replace with image later */
+  z-index: 0;
+}
+
+/* Monitor */
+.monitor {
+  position: relative;
+  z-index: 1;
+  border: 6px solid #222;
+  background: #b0d0f0; /* placeholder screen color */
+  width: 90vw;
+  max-width: 700px;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+}
+
+/* Screen */
+.screen {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  height: 100%;
+}
+
+/* Menu */
+.menu {
+  width: 40%;
+  background-color: #5e81ac;
+  padding: 10px;
+  border: 3px solid #222;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  margin-bottom: 8px;
+  color: #eceff4;
+  cursor: default;
+}
+
+/* Display Area */
+.display-area {
+  flex-grow: 1;
+  background-color: #eceff4;
+  border: 3px solid #222;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.display-area p {
+  margin: 0 0 10px 0;
+  font-size: 0.7rem;
+}
+
+/* Pokémon Grid */
+.pokemon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 40px);
+  grid-template-rows: repeat(5, 40px);
+  gap: 4px;
+}
+
+.pokemon-slot {
+  width: 40px;
+  height: 40px;
+  background-color: #d08770; /* placeholder, add Pokémon sprite later */
+  border: 2px solid #222;
+  box-sizing: border-box;
+}
+
+/* ================================
+   Pokéball Shelf
+================================= */
+.pokeshelf {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  z-index: 1;
+}
+
+.pokeball-slot {
+  width: 32px;
+  height: 32px;
+  background-color: #bf616a; /* placeholder color, replace with Pokéball image */
+  border: 2px solid #222;
+}
+
+/* ================================
+   Trainer Sprite
+================================= */
+.trainer-sprite {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  background-color: #a3be8c; /* placeholder, replace with trainer sprite */
+  border: 2px solid #222;
+  z-index: 2;
+}
+
+/* ================================
+   Portfolio Sections
+================================= */
 section {
-  padding: 2rem;
+  padding: 40px 20px;
   max-width: 800px;
-  margin: auto;
+  margin: 0 auto;
+}
+
+section h2 {
+  margin-bottom: 20px;
 }
 
 footer {
-  background: #111827;
-  color: white;
   text-align: center;
-  padding: 1rem;
+  padding: 20px;
+  background-color: #5e81ac;
+  color: #eceff4;
+}
+
+/* ================================
+   Responsive
+================================= */
+@media (max-width: 600px) {
+  .monitor {
+    width: 95vw;
+  }
+
+  .screen {
+    flex-direction: column;
+  }
+
+  .menu {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .pokemon-grid {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: auto;
+    justify-content: center;
+  }
+
+  .pokeshelf {
+    flex-wrap: wrap;
+  }
 }
