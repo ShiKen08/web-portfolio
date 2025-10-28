@@ -1,223 +1,339 @@
-/* ================================
-   General Styles
-================================= */
+/* ==========================================================
+   ======  GLOBAL VARIABLES & RESETS  ======
+   ========================================================== */
+
+:root {
+  --ink: #2b2b2b;
+  --cream: #f4e9d3;
+  --cream-dark: #e2d6bd;
+  --ui-blue: #5e81ac;
+  --ui-blue-dark: #3e5f86;
+  --ui-blue-xdark: #2c4566;
+  --slot-green: #b7d99b;
+  --slot-green-dark: #7fb06c;
+  --bevel: #2a2a2a;
+  --shadow: 0 3px 0 var(--bevel), 0 4px 0 #00000033;
+}
+/* ====== Global Font Setup ====== */
+body, button, input, a, h1, h2, h3, h4, p, span {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Press Start 2P', monospace; /* Retro pixel font */
-  background-color: #88c0d0; /* soft cyan like old Pokémon UIs */
-  color: #222;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--ink);
+  background-color: var(--cream);
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #5e81ac;
-  color: #fff;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-}
-
-nav a {
-  text-decoration: none;
-  color: #eceff4;
-  transition: color 0.2s;
-}
-
-nav a:hover {
-  color: #88c0d0;
-}
-
-/* ================================
-   Pokémon PC Room
-================================= */
-.pc-room {
-  position: relative;
-  display: grid;
-  place-items: center;
-  gap: 15px;
-  padding: 20px;
-}
-
-/* Background */
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #d8dee9; /* placeholder color, replace with image later */
-  z-index: 0;
-}
-
-/* Monitor */
-.monitor {
-  position: relative;
-  z-index: 1;
-  border: 6px solid #222;
-  background: #b0d0f0; /* placeholder screen color */
-  width: 90vw;
-  max-width: 700px;
-  aspect-ratio: 4 / 3;
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  box-sizing: border-box;
+.image-pixelated {
   image-rendering: pixelated;
 }
 
-/* Screen */
-.screen {
+/* ==========================================================
+   ======  HOMEPAGE (index.html)  ======
+   ========================================================== */
+
+body.home {
+  height: 100vh;
+  background: url('assets/images/pokemon-center.png') center/cover no-repeat;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.home::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  z-index: -1;
+}
+
+/* Header + intro box */
+.home header {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.4);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: var(--shadow);
+}
+
+.home header h1 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.home main {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  padding: 20px 30px;
+  width: min(90%, 600px);
+  box-shadow: var(--shadow);
+}
+
+.home a {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(#ffffff, #dfd8c7);
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-size: 0.8rem;
+}
+.home a:hover {
+  filter: brightness(0.95);
+  transform: translateY(1px);
+}
+
+/* ==========================================================
+   ======  PROJECT PC SCREEN (project.html)  ======
+   ========================================================== */
+
+/* monitor container from earlier */
+.monitor {
+  border: 6px solid var(--ink);
+  background: #b8d2f0;
+  padding: 12px;
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* main two-column PC layout (left card + right box) */
+.pc-screen {
+  display: grid;
+  grid-template-columns: 320px 1fr;
   gap: 12px;
   height: 100%;
 }
 
-/* Menu */
-.menu {
-  width: 40%;
-  background-color: #5e81ac;
+/* ===== Left: Project Card (replaces Pokémon panel) ===== */
+.project-card {
+  background: linear-gradient(#f9f1df, #efe2c6);
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto auto;
+  gap: 10px;
+  box-shadow: var(--shadow);
+  font-family: 'Press Start 2P', monospace;
+  color: var(--ink);
+}
+
+/* title row */
+.project-card__name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+/* sprite placeholder */
+.project-card__sprite {
+  background: var(--cream-dark);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-card__sprite span {
+  opacity: 0.6;
+  font-size: 0.65rem;
+}
+
+/* LV row (commits) */
+.project-card__lv {
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+}
+
+/* languages = type chips */
+.langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0;
+}
+.lang-chip {
+  background: #d9d1f6;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  line-height: 1;
+  box-shadow: var(--shadow);
+}
+
+/* ability/description */
+.project-card__ability {
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  border-radius: 8px;
   padding: 10px;
-  border: 3px solid #222;
+  font-size: 0.65rem;
+  min-height: 64px;
+}
+
+/* link button */
+.btn {
+  display: inline-block;
+  background: #efeadf;
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.btn:hover {
+  filter: brightness(0.95);
+  transform: translateY(1px);
+}
+
+/* ===== Right: Box grid with header & arrows ===== */
+.box {
+  background: linear-gradient(#a9c5e7, #7aa5d6);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+
+/* box header like “Box 1” with arrows */
+.box__header {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+}
+.arrow {
+  width: 36px;
+  height: 36px;
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  background: linear-gradient(#ffffff, #d9e6f6);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  cursor: default;
+  font-weight: bold;
+}
+.box__title {
+  background: linear-gradient(#ffffff, #d9e6f6);
+  border: 4px solid var(--ink);
+  border-radius: 10px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  box-shadow: var(--shadow);
+}
+
+/* “grass” grid */
+.box__grid {
+  flex: 1;
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  padding: 10px;
+  background:
+    linear-gradient(90deg, transparent 23px, #88c07a 24px, transparent 25px) 0 0/44px 44px,
+    linear-gradient(transparent 23px, #88c07a 24px, transparent 25px) 0 0/44px 44px,
+    linear-gradient(#cdeab5, #addf8f);
+}
+
+/* 6 x 5 slots, adjustable */
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 44px);
+  grid-auto-rows: 44px;
+  gap: 10px;
   justify-content: flex-start;
 }
-
-.menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.slot {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  background: #f6f1e7;
+  box-shadow: 0 2px 0 var(--bevel);
 }
 
-.menu li {
-  margin-bottom: 8px;
-  color: #eceff4;
-  cursor: default;
-}
-
-/* Display Area */
-.display-area {
-  flex-grow: 1;
-  background-color: #eceff4;
-  border: 3px solid #222;
-  padding: 10px;
+/* ===== Bottom action buttons ===== */
+.pc-actions {
+  margin-top: 6px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
 }
-
-.display-area p {
-  margin: 0 0 10px 0;
-  font-size: 0.7rem;
-}
-
-/* Pokémon Grid */
-.pokemon-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 40px);
-  grid-template-rows: repeat(5, 40px);
-  gap: 4px;
-}
-
-.pokemon-slot {
-  width: 40px;
-  height: 40px;
-  background-color: #d08770; /* placeholder, add Pokémon sprite later */
-  border: 2px solid #222;
-  box-sizing: border-box;
-}
-
-/* ================================
-   Pokéball Shelf
-================================= */
-.pokeshelf {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
-  z-index: 1;
-}
-
-.pokeball-slot {
-  width: 32px;
-  height: 32px;
-  background-color: #bf616a; /* placeholder color, replace with Pokéball image */
-  border: 2px solid #222;
-}
-
-/* ================================
-   Trainer Sprite
-================================= */
-.trainer-sprite {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: 48px;
+.pc-btn {
+  min-width: 160px;
   height: 48px;
-  background-color: #a3be8c; /* placeholder, replace with trainer sprite */
-  border: 2px solid #222;
-  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(#ffffff, #dfd8c7);
+  border: 5px solid var(--ink);
+  border-radius: 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--ink);
 }
 
-/* ================================
-   Portfolio Sections
-================================= */
-section {
-  padding: 40px 20px;
-  max-width: 800px;
-  margin: 0 auto;
+/* ===== Responsive ===== */
+@media (max-width: 840px) {
+  .pc-screen {
+    grid-template-columns: 1fr;
+  }
+  .project-card {
+    order: 2;
+  }
+  .box {
+    order: 1;
+  }
+  .slot-grid {
+    grid-template-columns: repeat(5, 44px);
+  }
 }
-
-section h2 {
-  margin-bottom: 20px;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #5e81ac;
-  color: #eceff4;
-}
-
-/* ================================
-   Responsive
-================================= */
-@media (max-width: 600px) {
-  .monitor {
-    width: 95vw;
+@media (max-width: 520px) {
+  .slot-grid {
+    grid-template-columns: repeat(4, 44px);
   }
-
-  .screen {
-    flex-direction: column;
-  }
-
-  .menu {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .pokemon-grid {
-    grid-template-columns: repeat(3, 40px);
-    grid-template-rows: auto;
-    justify-content: center;
-  }
-
-  .pokeshelf {
-    flex-wrap: wrap;
+  .pc-btn {
+    min-width: 120px;
+    font-size: 0.7rem;
+    height: 44px;
   }
 }
