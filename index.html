@@ -5,16 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kien Le | Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/game.css" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body class="home">
-  <header>
-    <h1>.</h1>
-  </header>
+<body class="game">
 
-  <main>
-    
-    <a href="project.html">Access the PC</a>
-  </main>
+  <div id="game-viewport">
+
+    <!-- Tilemap background -->
+    <canvas id="map-canvas"></canvas>
+
+    <!-- Sprites: NPCs + player rendered on top of canvas -->
+    <div id="sprites-layer">
+      <div id="npc-nurse-joy" class="npc" title="Nurse Joy">NJ</div>
+      <div id="player" class="player" data-facing="down"></div>
+    </div>
+
+    <!-- Dialogue box (Phase 2) -->
+    <div id="dialogue-box" class="overlay hidden">
+      <p id="dialogue-text"></p>
+      <span class="dialogue-continue">▼</span>
+    </div>
+
+    <!-- PC overlay (Phase 3) -->
+    <div id="pc-overlay" class="overlay hidden"></div>
+
+    <!-- Trainer Card overlay (Phase 4) -->
+    <div id="trainer-card-overlay" class="overlay hidden"></div>
+
+    <!-- Controls hint -->
+    <div id="controls-hint">
+      <p>ARROWS / WASD — Move</p>
+      <p>Z / ENTER — Interact</p>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { startGame } from './js/game-engine.js';
+    startGame();
+  </script>
 </body>
 </html>

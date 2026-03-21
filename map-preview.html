@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Map Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Press Start 2P', monospace;
+      color: #f0e8d0;
+      gap: 20px;
+    }
+    h1 { font-size: 0.75rem; letter-spacing: 1px; opacity: 0.7; }
+    canvas {
+      border: 4px solid #f0e8d0;
+      image-rendering: pixelated;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      max-width: 660px;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.5rem;
+    }
+    .legend-swatch {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f0e8d0;
+      flex-shrink: 0;
+    }
+    p { font-size: 0.5rem; opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <h1>Pokemon Center — Map Preview</h1>
+  <canvas id="map" width="640" height="480"></canvas>
+  <div class="legend" id="legend"></div>
+  <p>Open map.json to edit the layout, then refresh.</p>
+
+  <script>
+    const TILE_SIZE = 32;
+
+    const TILE_COLORS = {
+      0: { fill: '#3a3050', stroke: '#2a2040', label: 'Wall' },
+      1: { fill: '#e8dfc0', stroke: '#d8cfa8', label: 'Floor' },
+      2: { fill: '#c8a464', stroke: '#a8843c', label: 'Counter' },
+      3: { fill: '#5a8ab0', stroke: '#3a6a90', label: 'PC Terminal' },
+      4: { fill: '#b8e8c0', stroke: '#88c898', label: 'Door / Entrance' },
+      5: { fill: '#4a9a50', stroke: '#2a7a30', label: 'Plant' },
+      6: { fill: '#a07848', stroke: '#805828', label: 'Table' },
+      7: { fill: '#f0a0b8', stroke: '#d07898', label: 'Nurse Joy (NPC)' },
+      8: { fill: '#e04060', stroke: '#c02040', label: 'Healing Machine' },
+    };
+
+    // Draw a simple pixel-art style label inside a tile
+    function drawTileLabel(ctx, x, y, label, color) {
+      ctx.save();
+      ctx.font = '8px monospace';
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x + TILE_SIZE / 2, y + TILE_SIZE / 2);
+      ctx.restore();
+    }
+
+    // Draw interaction zone indicator
+    function drawInteractBadge(ctx, col, row, text) {
+      const x = col * TILE_SIZE;
+      const y = row * TILE_SIZE;
+      ctx.save();
+      ctx.fillStyle = '#ffe060';
+      ctx.strokeStyle = '#2a2a2a';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(x + 2, y + 2, TILE_SIZE - 4, 10, 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.font = '6px monospace';
+      ctx.fillStyle = '#2a2a2a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x + TILE_SIZE / 2, y + 7);
+      ctx.restore();
+    }
+
+    fetch('js/data/map.json')
+      .then(r => r.json())
+      .then(map => {
+        const canvas = document.getElementById('map');
+        const ctx = canvas.getContext('2d');
+        canvas.width = map.width * TILE_SIZE;
+        canvas.height = map.height * TILE_SIZE;
+
+        // Draw tiles
+        for (let row = 0; row < map.height; row++) {
+          for (let col = 0; col < map.width; col++) {
+            const type = map.tiles[row][col];
+            const tile = TILE_COLORS[type];
+            const x = col * TILE_SIZE;
+            const y = row * TILE_SIZE;
+
+            ctx.fillStyle = tile.fill;
+            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+
+            // Grid lines
+            ctx.strokeStyle = tile.stroke;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x + 0.5, y + 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
+
+            // Labels for special tiles
+            const labels = { 2:'CTR', 3:'PC', 4:'OUT', 5:'🌿', 6:'TBL', 7:'NJ', 8:'HEAL' };
+            if (labels[type]) {
+              drawTileLabel(ctx, x, y, labels[type], type === 7 || type === 8 ? '#fff' : '#2a2a2a');
+            }
+          }
+        }
+
+        // Draw player start
+        const ps = map.playerStart;
+        ctx.save();
+        ctx.fillStyle = '#6060f0';
+        ctx.strokeStyle = '#2a2a2a';
+        ctx.lineWidth = 2;
+        const px = ps.col * TILE_SIZE + TILE_SIZE / 2;
+        const py = ps.row * TILE_SIZE + TILE_SIZE / 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.font = '7px monospace';
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('YOU', px, py);
+        ctx.restore();
+
+        // Draw interaction zone hints
+        const zones = map.interactionZones;
+        zones.forEach(zone => {
+          if (zone.id === 'nurseJoy') {
+            for (let c = zone.triggerColMin; c <= zone.triggerColMax; c++) {
+              drawInteractBadge(ctx, c, zone.triggerRow, 'A');
+            }
+          } else if (zone.id === 'pc') {
+            drawInteractBadge(ctx, zone.triggerCol, zone.triggerRow, 'A');
+          }
+        });
+
+        // Build legend
+        const legend = document.getElementById('legend');
+        const seen = new Set();
+        for (let row = 0; row < map.height; row++) {
+          for (let col = 0; col < map.width; col++) {
+            const t = map.tiles[row][col];
+            if (!seen.has(t)) {
+              seen.add(t);
+              const item = document.createElement('div');
+              item.className = 'legend-item';
+              const swatch = document.createElement('div');
+              swatch.className = 'legend-swatch';
+              swatch.style.background = TILE_COLORS[t].fill;
+              item.appendChild(swatch);
+              item.appendChild(document.createTextNode(TILE_COLORS[t].label));
+              legend.appendChild(item);
+            }
+          }
+        }
+        // Player start legend
+        const playerItem = document.createElement('div');
+        playerItem.className = 'legend-item';
+        const ps2 = document.createElement('div');
+        ps2.className = 'legend-swatch';
+        ps2.style.background = '#6060f0';
+        ps2.style.borderRadius = '50%';
+        playerItem.appendChild(ps2);
+        playerItem.appendChild(document.createTextNode('Player Start'));
+        legend.appendChild(playerItem);
+        const aItem = document.createElement('div');
+        aItem.className = 'legend-item';
+        const aS = document.createElement('div');
+        aS.className = 'legend-swatch';
+        aS.style.background = '#ffe060';
+        playerItem.appendChild(ps2);
+        aItem.appendChild(aS);
+        aItem.appendChild(document.createTextNode('Interact Zone (A)'));
+        legend.appendChild(aItem);
+      });
+  </script>
+</body>
+</html>
