@@ -1,6 +1,8 @@
-import { renderMap }    from './map-renderer.js';
-import { loadCollision } from './collision.js';
-import { Player }        from './player.js';
+import { renderMap }                    from './map-renderer.js';
+import { loadCollision }               from './collision.js';
+import { Player }                      from './player.js';
+import { openDialogue, advanceDialogue } from './dialogue.js';
+import { openPC }                        from './pc-overlay.js';
 
 // ── State machine ──────────────────────────────────────────
 export const State = {
@@ -31,10 +33,14 @@ function onKeyDown(e) {
   heldKeys.add(e.key);
   if (SCROLL_KEYS.has(e.key)) e.preventDefault();
 
-  if (currentState === State.WALKING && INTERACT_KEYS.has(e.key)) {
+  if (INTERACT_KEYS.has(e.key)) {
     e.preventDefault();
-    const zone = player.tryInteract();
-    if (zone) handleInteract(zone);
+    if (currentState === State.DIALOGUE) {
+      advanceDialogue();
+    } else if (currentState === State.WALKING) {
+      const zone = player.tryInteract();
+      if (zone) handleInteract(zone);
+    }
   }
 }
 
@@ -42,19 +48,28 @@ function onKeyUp(e) {
   heldKeys.delete(e.key);
 }
 
+// ── Nurse Joy dialogue script ──────────────────────────────
+const NURSE_JOY_SCRIPT = [
+  "Welcome to Kien's Portfolio Center!",
+  "I'm Nurse Joy. Kien is a software engineer who\nloves building cool things.",
+  "Explore the room, then head to the PC terminal\nin the corner to see his projects and experience.",
+  "Enjoy your visit! ♪",
+];
+
 // ── Interaction dispatch ───────────────────────────────────
 function handleInteract(zone) {
   if (zone.id === 'nurseJoy') {
-    // Phase 2: will open dialogue
-    console.log('[game] Nurse Joy interaction — Phase 2');
+    setState(State.DIALOGUE);
+    openDialogue(NURSE_JOY_SCRIPT, () => setState(State.WALKING));
   } else if (zone.id === 'pc') {
-    // Phase 3: will open PC overlay
-    console.log('[game] PC interaction — Phase 3');
+    setState(State.PC);
+    openPC(() => setState(State.WALKING));
   }
 }
 
 export function setState(newState) {
   currentState = newState;
+  if (newState === State.WALKING) heldKeys.clear();
 }
 
 // ── Game loop ──────────────────────────────────────────────
