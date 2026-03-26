@@ -3,6 +3,7 @@ import { loadCollision }               from './collision.js';
 import { Player }                      from './player.js';
 import { openDialogue, advanceDialogue } from './dialogue.js';
 import { openPC }                        from './pc-overlay.js';
+import { openTrainerCard }              from './trainer-card.js';
 
 // ── State machine ──────────────────────────────────────────
 export const State = {
@@ -64,6 +65,9 @@ function handleInteract(zone) {
   } else if (zone.id === 'pc') {
     setState(State.PC);
     openPC(() => setState(State.WALKING));
+  } else if (zone.id === 'trainerCard') {
+    setState(State.TRAINER_CARD);
+    openTrainerCard(() => setState(State.WALKING));
   }
 }
 

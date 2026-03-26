@@ -46,6 +46,14 @@
       "facing": "up",
       "triggerRow": 4,
       "triggerCol": 13
+    },
+    {
+      "id": "trainerCard",
+      "type": "overlay",
+      "facing": "down",
+      "triggerRow": 7,
+      "triggerColMin": 4,
+      "triggerColMax": 5
     }
   ],
   "playerStart": {

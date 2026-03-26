@@ -421,6 +421,237 @@ body.game {
 }
 
 /* ==========================================================
+   TRAINER CARD (Phase 4) — About Me
+   ========================================================== */
+
+#trainer-card-overlay {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(8, 6, 16, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tc-window {
+  width: 580px;
+  height: 400px;
+  background: linear-gradient(135deg, #1a1a3e 0%, #2e1a5a 50%, #1a2e3e 100%);
+  border: 4px solid #f0e8d0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.5), inset 0 0 60px rgba(120,60,200,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle diagonal stripe watermark */
+.tc-window::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 18px,
+    rgba(255,255,255,0.015) 18px,
+    rgba(255,255,255,0.015) 19px
+  );
+  pointer-events: none;
+}
+
+/* Header */
+.tc-header {
+  background: linear-gradient(90deg, #3a1a7e, #5a2aae, #3a1a7e);
+  border-bottom: 4px solid #f0e8d0;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.tc-title {
+  font-size: 0.55rem;
+  color: #f0e8d0;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(200,160,255,0.8);
+}
+
+.tc-close-btn {
+  background: transparent;
+  border: 2px solid rgba(240,232,208,0.5);
+  border-radius: 6px;
+  color: #f0e8d0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.35rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.tc-close-btn:hover { opacity: 1; }
+
+/* Body */
+.tc-body {
+  display: flex;
+  flex: 1;
+  padding: 14px 16px;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* Left: portrait + bio */
+.tc-portrait-col {
+  width: 170px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tc-portrait {
+  flex: 1;
+  border: 3px solid rgba(240,232,208,0.6);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2a1a4e, #1a2a4e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: inset 0 0 20px rgba(120,60,200,0.3);
+}
+
+.tc-portrait-star {
+  font-size: 2.2rem;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 8px rgba(200,160,255,0.8));
+}
+
+.tc-portrait-label {
+  font-size: 0.3rem;
+  color: rgba(240,232,208,0.5);
+  letter-spacing: 2px;
+}
+
+.tc-bio-box {
+  border: 3px solid rgba(240,232,208,0.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  padding: 7px 8px;
+  font-size: 0.28rem;
+  color: rgba(220,210,240,0.85);
+  line-height: 2.2;
+}
+
+/* Right: info rows + badges */
+.tc-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.tc-info-rows {
+  border: 3px solid rgba(240,232,208,0.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tc-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.tc-label {
+  font-size: 0.3rem;
+  color: rgba(200,160,255,0.8);
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.tc-value {
+  font-size: 0.33rem;
+  color: #f0e8d0;
+}
+
+/* Badges */
+.tc-badges-section {
+  border: 3px solid rgba(240,232,208,0.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  padding: 8px 10px;
+  flex: 1;
+}
+
+.tc-badges-title {
+  font-size: 0.3rem;
+  color: rgba(200,160,255,0.8);
+  margin: 0 0 7px;
+  letter-spacing: 1px;
+}
+
+.tc-badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tc-badge {
+  border: 2px solid rgba(0,0,0,0.35);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 0.28rem;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
+
+/* Footer: contact links */
+.tc-footer {
+  border-top: 3px solid rgba(240,232,208,0.3);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.tc-link-btn {
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(240,232,208,0.45);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.3rem;
+  color: #f0e8d0;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tc-link-btn:hover {
+  background: rgba(255,255,255,0.14);
+}
+
+.tc-link-btn--disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ==========================================================
    CONTROLS HINT
    ========================================================== */
 
