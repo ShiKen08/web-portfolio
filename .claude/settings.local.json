@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git -C /Users/kien/web-portfolio ls-files --error-unmatch web-portfolio)",
+      "Bash(git -C /Users/kien/web-portfolio status)",
+      "Bash(git -C /Users/kien/web-portfolio ls-files --stage web-portfolio)",
+      "Bash(git:*)"
     ]
   }
 }
