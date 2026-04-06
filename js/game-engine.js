@@ -130,6 +130,11 @@ async function triggerRoomTransition(destRoom, spawnCol, spawnRow) {
   flashTransition(async () => {
     mapData = await loadRoom(destRoom);
     player.warpTo(spawnCol, spawnRow);
+
+    // Hide indoor NPCs when outdoors
+    const nurseEl = document.getElementById('npc-nurse-joy');
+    if (nurseEl) nurseEl.style.display = destRoom === 'room1' ? '' : 'none';
+
     setState(State.WALKING);
   });
 }
