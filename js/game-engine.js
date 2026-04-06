@@ -1,10 +1,14 @@
-import { renderMap }                    from './map-renderer.js';
-import { loadCollision }               from './collision.js';
-import { Player }                      from './player.js';
+import { renderMap }                      from './map-renderer.js';
+import { loadCollision }                 from './collision.js';
+import { Player }                        from './player.js';
 import { openDialogue, advanceDialogue } from './dialogue.js';
 import { openPC }                        from './pc-overlay.js';
-import { openTrainerCard }              from './trainer-card.js';
-import { showTitleScreen }             from './title-screen.js';
+import { openTrainerCard }               from './trainer-card.js';
+import { showTitleScreen }              from './title-screen.js';
+import { initSprites }                   from './sprites.js';
+import { flashTransition }              from './transition.js';
+import { startMusic, toggleMute }       from './music.js';
+import { loadRoom, getCurrentRoom, getExitDestination } from './room-manager.js';
 
 // ── State machine ──────────────────────────────────────────
 export const State = {
@@ -12,11 +16,22 @@ export const State = {
   DIALOGUE:     'dialogue',
   PC:           'pc',
   TRAINER_CARD: 'trainer_card',
+  TRANSITION:   'transition',
 };
 
 let currentState = State.WALKING;
-let player = null;
+let player  = null;
 let mapData = null;
+
+// ── Viewport scaling ───────────────────────────────────────
+function fitViewport() {
+  const scale = Math.min(
+    window.innerWidth  / 640,
+    window.innerHeight / 480
+  );
+  document.documentElement.style.setProperty('--viewport-scale', scale);
+}
+window.addEventListener('resize', fitViewport);
 
 // ── Input ──────────────────────────────────────────────────
 const heldKeys = new Set();
@@ -77,6 +92,48 @@ export function setState(newState) {
   if (newState === State.WALKING) heldKeys.clear();
 }
 
+// ── Door / exit detection ──────────────────────────────────
+function checkExits() {
+  if (!mapData) return;
+
+  // Check tile-based exits (door tiles at map boundary)
+  const tile = mapData.tiles[player.tileY]?.[player.tileX];
+  if (tile !== 4) return;  // not a door tile
+
+  // Only trigger if player is at a boundary row/col
+  const atBottom = player.tileY >= mapData.height - 1;
+  const atTop    = player.tileY <= 0;
+
+  if (!atBottom && !atTop) return;
+
+  // Check explicit exits in mapData if present
+  if (mapData.exits) {
+    for (const exit of mapData.exits) {
+      const inCol = player.tileX >= exit.colMin && player.tileX <= exit.colMax;
+      const inRow = player.tileY === exit.row;
+      if (inCol && inRow) {
+        triggerRoomTransition(exit.to, exit.spawnCol, exit.spawnRow);
+        return;
+      }
+    }
+  } else {
+    // Fallback: auto-route via room manager
+    const dest = getExitDestination(getCurrentRoom());
+    triggerRoomTransition(dest, 9, atBottom ? 2 : 12);
+  }
+}
+
+async function triggerRoomTransition(destRoom, spawnCol, spawnRow) {
+  setState(State.TRANSITION);
+  heldKeys.clear();
+
+  flashTransition(async () => {
+    mapData = await loadRoom(destRoom);
+    player.warpTo(spawnCol, spawnRow);
+    setState(State.WALKING);
+  });
+}
+
 // ── Game loop ──────────────────────────────────────────────
 let lastMoveTime = 0;
 const MOVE_INTERVAL = 150; // ms between tile steps when key held
@@ -88,8 +145,9 @@ function update(timestamp) {
 
   for (const [key, dir] of Object.entries(MOVE_MAP)) {
     if (heldKeys.has(key)) {
-      player.tryMove(dir);
+      const moved = player.tryMove(dir);
       lastMoveTime = timestamp;
+      if (moved) checkExits();
       break;
     }
   }
@@ -102,17 +160,18 @@ function loop(timestamp) {
 
 // ── Bootstrap ──────────────────────────────────────────────
 export async function startGame() {
+  fitViewport();
+
   await showTitleScreen();
 
-  const res = await fetch('js/data/map.json');
-  mapData = await res.json();
+  // Start music right after user interaction (title screen dismiss)
+  startMusic();
 
-  // Render tilemap to canvas
-  const canvas = document.getElementById('map-canvas');
-  renderMap(canvas, mapData);
+  // Load room 1
+  mapData = await loadRoom('room1');
 
-  // Load collision data
-  loadCollision(mapData);
+  // Init pixel sprites
+  initSprites();
 
   // Init player
   const playerEl = document.getElementById('player');
@@ -128,6 +187,15 @@ export async function startGame() {
   if (nurseEl) {
     nurseEl.style.left = `${9 * mapData.tileSize}px`;
     nurseEl.style.top  = `${2 * mapData.tileSize}px`;
+  }
+
+  // Mute button
+  const muteBtn = document.getElementById('mute-btn');
+  if (muteBtn) {
+    muteBtn.addEventListener('click', () => {
+      const isMuted = toggleMute();
+      muteBtn.textContent = isMuted ? '🔇' : '♪';
+    });
   }
 
   // Input listeners
