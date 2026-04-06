@@ -15,16 +15,13 @@ export function showTitleScreen() {
       if (dismissed) return;
       dismissed = true;
 
-      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onKey);
       screen.removeEventListener('click', dismiss);
 
-      // White flash
       if (flash) flash.classList.add('active');
 
       setTimeout(() => {
-        // Fade out the whole screen
         screen.classList.add('ts-exit');
-
         setTimeout(() => {
           screen.remove();
           resolve();
@@ -39,10 +36,14 @@ export function showTitleScreen() {
       }
     }
 
-    // Small delay before accepting input so rapid page load doesn't skip it
+    // Focus the overlay so it receives keyboard events immediately
+    screen.setAttribute('tabindex', '-1');
+    screen.focus();
+
+    // Short delay only to prevent instant skip on fast page loads
     setTimeout(() => {
-      document.addEventListener('keydown', onKey);
+      window.addEventListener('keydown', onKey);
       screen.addEventListener('click', dismiss);
-    }, 900);
+    }, 300);
   });
 }
