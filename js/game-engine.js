@@ -84,6 +84,8 @@ function handleInteract(zone) {
   } else if (zone.id === 'trainerCard') {
     setState(State.TRAINER_CARD);
     openTrainerCard(() => setState(State.WALKING));
+  } else if (zone.type === 'exit') {
+    triggerRoomTransition(zone.to, zone.spawnCol, zone.spawnRow);
   }
 }
 

@@ -5,7 +5,7 @@
   "height": 15,
   "tileSize": 32,
   "tiles": [
-    [9, 9, 9, 9, 9, 9, 9, 9, 9, 4, 4, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
     [9,13,13,13, 9, 8, 8, 8, 8, 8, 8, 8, 9,13,13,13, 9, 8, 9, 9],
     [9,14,14,14, 9, 8, 8, 8, 8, 8, 8, 8, 9,14,14,14, 9, 8, 9, 9],
     [9,14,19,14, 9, 8, 8, 8, 8, 8, 8, 8, 9,14,19,14, 9, 8,15, 9],
@@ -37,9 +37,18 @@
     "19": "house_door"
   },
   "walkable": [4, 8, 11, 18],
-  "interactionZones": [],
+  "interactionZones": [
+    {
+      "id": "pcenterExit",
+      "type": "exit",
+      "facing": "up",
+      "triggerRow": 4,
+      "triggerCol": 14,
+      "to": "room1",
+      "spawnCol": 9,
+      "spawnRow": 12
+    }
+  ],
   "playerStart": { "col": 9, "row": 2 },
-  "exits": [
-    { "row": 0, "colMin": 9, "colMax": 10, "to": "room1", "spawnCol": 9, "spawnRow": 12 }
-  ]
+  "exits": []
 }

@@ -59,5 +59,8 @@
   "playerStart": {
     "col": 9,
     "row": 11
-  }
+  },
+  "exits": [
+    { "row": 14, "colMin": 9, "colMax": 10, "to": "room2", "spawnCol": 14, "spawnRow": 4 }
+  ]
 }
