@@ -4,6 +4,7 @@ import { Player }                      from './player.js';
 import { openDialogue, advanceDialogue } from './dialogue.js';
 import { openPC }                        from './pc-overlay.js';
 import { openTrainerCard }              from './trainer-card.js';
+import { showTitleScreen }             from './title-screen.js';
 
 // ── State machine ──────────────────────────────────────────
 export const State = {
@@ -101,6 +102,8 @@ function loop(timestamp) {
 
 // ── Bootstrap ──────────────────────────────────────────────
 export async function startGame() {
+  await showTitleScreen();
+
   const res = await fetch('js/data/map.json');
   mapData = await res.json();
 
