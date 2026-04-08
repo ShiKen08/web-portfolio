@@ -89,6 +89,11 @@ body.game {
   image-rendering: pixelated;
 }
 
+/* Flip sprite horizontally when facing left */
+.player[data-facing="left"] {
+  transform: scaleX(-1);
+}
+
 /* Walk bob animation */
 .player.is-walking {
   animation: player-walk-bob 0.2s steps(2) infinite;

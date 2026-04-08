@@ -156,7 +156,7 @@ export const sprites = {
   player: {
     down:  () => get('pd', playerDown),
     up:    () => get('pu', playerUp),
-    left:  () => get('pl', playerLeft),
+    left:  () => get('pr', playerRight),  // mirrored in CSS via scaleX(-1)
     right: () => get('pr', playerRight),
   },
   nurseJoy: {

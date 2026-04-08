@@ -98,31 +98,27 @@ export function setState(newState) {
 function checkExits() {
   if (!mapData) return;
 
-  // Check tile-based exits (door tiles at map boundary)
   const tile = mapData.tiles[player.tileY]?.[player.tileX];
   if (tile !== 4) return;  // not a door tile
 
-  // Only trigger if player is at a boundary row/col
-  const atBottom = player.tileY >= mapData.height - 1;
-  const atTop    = player.tileY <= 0;
-
-  if (!atBottom && !atTop) return;
-
-  // Check explicit exits in mapData if present
-  if (mapData.exits) {
+  // Explicit exits first — supports any row, not just map boundaries
+  if (mapData.exits?.length) {
     for (const exit of mapData.exits) {
-      const inCol = player.tileX >= exit.colMin && player.tileX <= exit.colMax;
-      const inRow = player.tileY === exit.row;
-      if (inCol && inRow) {
+      if (player.tileY === exit.row &&
+          player.tileX >= exit.colMin &&
+          player.tileX <= exit.colMax) {
         triggerRoomTransition(exit.to, exit.spawnCol, exit.spawnRow);
         return;
       }
     }
-  } else {
-    // Fallback: auto-route via room manager
-    const dest = getExitDestination(getCurrentRoom());
-    triggerRoomTransition(dest, 9, atBottom ? 2 : 12);
   }
+
+  // Fallback: boundary-only auto-routing
+  const atBottom = player.tileY >= mapData.height - 1;
+  const atTop    = player.tileY <= 0;
+  if (!atBottom && !atTop) return;
+  const dest = getExitDestination(getCurrentRoom());
+  triggerRoomTransition(dest, 9, atBottom ? 2 : 12);
 }
 
 async function triggerRoomTransition(destRoom, spawnCol, spawnRow) {
